@@ -1,0 +1,24 @@
+name: GitHub Actions Test
+on: [push]
+jobs:
+  Build-Cabal-Arm:
+    name: Build armv7/aarch64 (Cabal)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: checkout@v2.4.0
+      - name: Copy Files
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_ARM_HOST }}
+          username: ubuntu
+          key: ${{ secrets.SSH_ARM_PRIVATE_KEY }}
+          source: "files/test1.sh,files/test2.sh"
+          target: "test"
+      - name: Execute Files
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_ARM_HOST }}
+          username: ubuntu
+          key: ${{ secrets.SSH_ARM_PRIVATE_KEY }}
+          script_stop: true
+          script: sh test1.sh && sh test2.sh
