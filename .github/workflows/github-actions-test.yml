@@ -14,6 +14,7 @@ jobs:
           key: ${{ secrets.SSH_ARM_PRIVATE_KEY }}
           source: ".github/workflows/files/*.sh"
           target: "github-test"
+          strip_components: 3
       - name: Execute Files
         uses: appleboy/ssh-action@master
         with:
