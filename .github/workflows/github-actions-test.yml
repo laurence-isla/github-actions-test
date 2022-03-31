@@ -5,15 +5,15 @@ jobs:
     name: Build armv7/aarch64 (Cabal)
     runs-on: ubuntu-latest
     steps:
-      - uses: checkout@v2.4.0
+      - uses: actions/checkout@v2.4.0
       - name: Copy Files
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SSH_ARM_HOST }}
           username: ubuntu
           key: ${{ secrets.SSH_ARM_PRIVATE_KEY }}
-          source: "files/test1.sh,files/test2.sh"
-          target: "test"
+          source: ".github/workflows/files/*.sh"
+          target: "github-test"
       - name: Execute Files
         uses: appleboy/ssh-action@master
         with:
@@ -21,4 +21,6 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_ARM_PRIVATE_KEY }}
           script_stop: true
-          script: sh test1.sh && sh test2.sh
+          script: |
+            sh github-test/test1.sh && sh github-test/test2.sh
+            rm -rf ~/github-test
