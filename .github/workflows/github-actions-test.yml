@@ -4,6 +4,8 @@ jobs:
   Build-Cabal-Arm:
     name: Build armv7/aarch64 (Cabal)
     runs-on: ubuntu-latest
+    env:
+      SHA: ${{ github.sha }}
     steps:
       - uses: actions/checkout@v2.4.0
       - name: Copy Files
@@ -22,6 +24,9 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_ARM_PRIVATE_KEY }}
           script_stop: true
+          envs: GITHUB_SHA,SHA
           script: |
             sh github-test/test1.sh && sh github-test/test2.sh
+            echo $GITHUB_SHA
+            echo $SHA
             rm -rf ~/github-test
