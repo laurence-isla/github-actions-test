@@ -40,6 +40,7 @@ jobs:
             result/text1.txt
             result/text2.txt
           target: result
+          insecure_ignore_fingerprint: true
       - name: Test downloaded files from remote server
         run: |
           cat result/text1.txt
