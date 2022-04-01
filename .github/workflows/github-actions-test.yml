@@ -9,6 +9,8 @@ jobs:
       TEST: "v1.0.0/main"
     steps:
       - uses: actions/checkout@v2.4.0
+      - name: Create directory
+        run: mkdir result
       - name: Copy Files
         uses: appleboy/scp-action@master
         with:
@@ -37,9 +39,9 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_ARM_PRIVATE_KEY }}
           source: result/*
-          target: .
+          target: result
           insecure_ignore_fingerprint: true
       - name: Test downloaded files from remote server
         run: |
-          cat text1.txt
-          cat text2.txt
+          cat result/text1.txt
+          cat result/text2.txt
