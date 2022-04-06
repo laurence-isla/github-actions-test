@@ -39,10 +39,8 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_ARM_PRIVATE_KEY }}
           insecure_ignore_fingerprint: true
-          source: |
-            result/text1.txt
-            result/text2.txt
-          target: result
+          source: result/text1.txt
+          target: result/text1.txt
       - name: Test downloaded files from remote server
         run: |
           cat result/text1.txt
