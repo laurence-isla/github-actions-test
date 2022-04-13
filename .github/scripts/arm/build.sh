@@ -10,7 +10,8 @@ PGRST_GITHUB_COMMIT="$1"
 DOCKER_REPO="$2"
 DOCKER_USER="$3"
 DOCKER_PASS="$4"
-DOCKER_BUILD_PATH="$5"
+SCRIPT_PATH="$5"
+DOCKER_BUILD_PATH="$5/docker_env"
 
 clean_env()
 {
@@ -51,10 +52,10 @@ tar -cJf postgrest-ubuntu-aarch64.tar.xz postgrest
 cd ~/$DOCKER_BUILD_PATH/build/linux_arm_v7
 tar -cJf postgrest-ubuntu-armv7.tar.xz postgrest
 
-cd ~/DOCKER_BUILD_PATH/..
+cd ~/$DOCKER_BUILD_PATH/..
 
 mkdir -p result
-mv ~/$DOCKER_BUILD_PATH/build/linux_arm64/*.tar.xz ~/result
-mv ~/$DOCKER_BUILD_PATH/build/linux_arm_v7/*.tar.xz ~/result
+mv ~/$DOCKER_BUILD_PATH/build/linux_arm64/*.tar.xz ~/$DOCKER_BUILD_PATH/../result
+mv ~/$DOCKER_BUILD_PATH/build/linux_arm_v7/*.tar.xz ~/$DOCKER_BUILD_PATH/../result
 rm -rf ~/$DOCKER_BUILD_PATH/build
 tar -cJf result.tar.xz result
