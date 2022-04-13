@@ -75,11 +75,56 @@ jobs:
     needs:
       - Build-Cabal-Arm
     outputs:
-      version: "9.0.0.20220211"
-      isprerelease: "true"
+      version: "10.0.0"
+      isprerelease: ""
     steps:
       - uses: actions/checkout@v2.4.0
 
+
+  Release-GitHub:
+    name: Release on GitHub
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    needs: Prepare-Release
+    env:
+      VERSION: ${{ needs.Prepare-Release.outputs.version }}
+    steps:
+      - uses: actions/checkout@v2.4.0
+      - name: Download all artifacts
+        uses: actions/download-artifact@v2.1.0
+        with:
+          path: artifacts
+      - name: Create release bundle with archives for all builds
+        run: |
+          find artifacts -type f -iname postgrest -exec chmod +x {} \;
+
+          mkdir -p release-bundle
+
+          tar cJvf "release-bundle/postgrest-v$VERSION-ubuntu-aarch64.tar.xz" \
+            -C artifacts/postgrest-ubuntu-aarch64 postgrest
+
+          tar cJvf "release-bundle/postgrest-v$VERSION-ubuntu-armv7.tar.xz" \
+            -C artifacts/postgrest-ubuntu-armv7 postgrest
+
+      - name: Save release bundle
+        uses: actions/upload-artifact@v2.3.1
+        with:
+          name: release-bundle
+          path: release-bundle
+          if-no-files-found: error
+
+      - name: Publish release on GitHub
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          isprerelease="${{ needs.Prepare-Release.outputs.isprerelease }}"
+          echo "Releasing version v$VERSION on GitHub (isprerelease=$isprerelease)..."
+
+          gh release delete "v$VERSION" || true
+          gh release create "v$VERSION" \
+            ${isprerelease:+"--prerelease"} \
+            release-bundle/*
 
   Release-Docker:
     name: Release on Docker Hub
