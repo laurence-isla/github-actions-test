@@ -4,17 +4,23 @@ on:
   push:
     branches:
       - main
+    tags:
+      - v*
+  pull_request:
+    branches:
+      - main
 
 jobs:
   Build-Cabal-Arm:
     name: Build armv7/aarch64 (Cabal)
+    if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     outputs:
       remotepath: ${{ steps.Remote-Dir.outputs.remotepath }}
     env:
       GITHUB_COMMIT: "dcf7ade5bc70a31fe0e083e1527b74125a94aeda"
-      DOCKER_REPO: "postgrest"
-      DOCKER_USER: ${{ secrets.DOCKER_USER }}
+      DOCKER_REPO: "laurenceisla"
+      DOCKER_USER: "laurenceisla"
       DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
     steps:
       - uses: actions/checkout@v2.4.0
@@ -69,16 +75,19 @@ jobs:
           path: result/linux_arm_v7/postgrest
           if-no-files-found: error
 
+
   Prepare-Release:
     name: Prepare release
+    # if: startsWith(github.ref, 'refs/tags/v')
+    if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     needs:
       - Build-Cabal-Arm
     outputs:
-      version: "10.0.0"
-      isprerelease: ""
+      version: "9.0.0.20220211"
+      isprerelease: "1"
     steps:
-      - uses: actions/checkout@v2.4.0
+      - uses: actions/checkout@v3
 
 
   Release-GitHub:
@@ -90,9 +99,9 @@ jobs:
     env:
       VERSION: ${{ needs.Prepare-Release.outputs.version }}
     steps:
-      - uses: actions/checkout@v2.4.0
+      - uses: actions/checkout@v3
       - name: Download all artifacts
-        uses: actions/download-artifact@v2.1.0
+        uses: actions/download-artifact@v3
         with:
           path: artifacts
       - name: Create release bundle with archives for all builds
@@ -108,7 +117,7 @@ jobs:
             -C artifacts/postgrest-ubuntu-armv7 postgrest
 
       - name: Save release bundle
-        uses: actions/upload-artifact@v2.3.1
+        uses: actions/upload-artifact@v3
         with:
           name: release-bundle
           path: release-bundle
@@ -126,6 +135,7 @@ jobs:
             ${isprerelease:+"--prerelease"} \
             release-bundle/*
 
+
   Release-Docker:
     name: Release on Docker Hub
     runs-on: ubuntu-latest
@@ -134,12 +144,13 @@ jobs:
       - Prepare-Release
     env:
       GITHUB_COMMIT: "dcf7ade5bc70a31fe0e083e1527b74125a94aeda"
-      DOCKER_REPO: "postgrest"
-      DOCKER_USER: ${{ secrets.DOCKER_USER }}
+      DOCKER_REPO: laurenceisla
+      DOCKER_USER: laurenceisla
       DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
       VERSION: ${{ needs.Prepare-Release.outputs.version }}
       ISPRERELEASE: ${{ needs.Prepare-Release.outputs.isprerelease }}
     steps:
+      - uses: actions/checkout@v3
       - name: Publish images for ARM builds on Docker Hub
         uses: appleboy/ssh-action@master
         env:
@@ -158,7 +169,7 @@ jobs:
     needs:
       - Build-Cabal-Arm
       - Release-Docker
-    if: always()
+    if: ${{ always() && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     env:
       REMOTE_DIR: ${{ needs.Build-Cabal-Arm.outputs.remotepath }}
