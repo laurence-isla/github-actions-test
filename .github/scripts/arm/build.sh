@@ -12,7 +12,7 @@ DOCKER_USER="$3"
 DOCKER_PASS="$4"
 SCRIPT_PATH="$5"
 
-DOCKER_BUILD_PATH="$SCRIPT_PATH/docker_env"
+DOCKER_BUILD_PATH="$SCRIPT_PATH/docker-env"
 
 clean_env()
 {
