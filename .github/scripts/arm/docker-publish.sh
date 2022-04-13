@@ -39,7 +39,7 @@ cd ~/$DOCKER_BUILD_PATH
 #       This image must be manually deleted from Docker Hub at the end of the process.
 sudo docker buildx build --build-arg PGRST_GITHUB_COMMIT=$PGRST_GITHUB_COMMIT \
                          --platform linux/arm/v7,linux/arm64 \
-                         --cache-from $DOCKER_REPO/postgrest:postgrest-build-arm \
+                         --cache-from $DOCKER_REPO/postgrest-build-arm \
                          -t $DOCKER_REPO/postgrest:$PGRST_VERSION-arm \
                          --push .
 
