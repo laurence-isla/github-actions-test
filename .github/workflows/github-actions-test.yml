@@ -49,10 +49,14 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_ARM_PRIVATE_KEY }}
           fingerprint: ${{ secrets.SSH_ARM_FINGERPRINT }}
-          source: "github-test/test1.sh"
-          target: "test1.sh"
+          source: |
+            "github-test/test1.sh"
+            "github-test/test2.sh"
+          target: .
       - name: Test downloaded file from remote server
-        run: cat test1.sh
+        run: |
+          sh test1.sh "A" "B" "C"
+          sh test2.sh
 
   Clean-Remote:
     name: Remove copied files from server
