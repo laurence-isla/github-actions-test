@@ -46,14 +46,15 @@ jobs:
           host: ${{ secrets.SSH_ARM_HOST }}
           username: ubuntu
           key: ${{ secrets.SSH_ARM_PRIVATE_KEY }}
-          insecure_ignore_fingerprint: true
+          fingerprint: ${{ secrets.SSH_ARM_FINGERPRINT }}
           source: "github-test/test1.sh"
           target: "test1.sh"
       - name: Test downloaded file from remote server
         run: cat test1.sh
 
   Clean-Remote:
-    name: Build armv7/aarch64 (Cabal)
+    name: Remove copied files from server
+    needs: Copy-From-Remote
     if: always()
     runs-on: ubuntu-latest
     steps:
@@ -64,5 +65,6 @@ jobs:
           host: ${{ secrets.SSH_ARM_HOST }}
           username: ubuntu
           key: ${{ secrets.SSH_ARM_PRIVATE_KEY }}
+          fingerprint: ${{ secrets.SSH_ARM_FINGERPRINT }}
           envs: GITHUB_SHA,SHA
           script: rm -rf ~/github-test
