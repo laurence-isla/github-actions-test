@@ -52,7 +52,7 @@ jobs:
           source: |
             "github-test/test1.sh"
             "github-test/test2.sh"
-          target: .
+          target: "."
       - name: Test downloaded file from remote server
         run: |
           sh test1.sh "A" "B" "C"
