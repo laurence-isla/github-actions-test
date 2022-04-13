@@ -8,7 +8,6 @@ on:
 jobs:
   Build-Cabal-Arm:
     name: Build armv7/aarch64 (Cabal)
-    if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     outputs:
       remotepath: ${{ steps.Remote-Dir.outputs.remotepath }}
@@ -75,6 +74,8 @@ jobs:
     outputs:
       version: "v9.0.0.20220211"
       isprerelease: "true"
+    steps:
+      - uses: actions/checkout@v2.4.0
 
 
   Release-Docker:
