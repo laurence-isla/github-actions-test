@@ -7,6 +7,8 @@ jobs:
     env:
       SHA: ${{ github.sha }}
       TEST: "v1.0.0/main"
+    outputs:
+      out: "output from Copy-To-Remote"
     steps:
       - uses: actions/checkout@v2.4.0
       - name: Create directory
@@ -68,3 +70,5 @@ jobs:
           fingerprint: ${{ secrets.SSH_ARM_FINGERPRINT }}
           envs: GITHUB_SHA,SHA
           script: rm -rf ~/github-test
+      - name: Test output from previous job
+        run: echo ${{ needs.Copy-To-Remote.outputs.out }}
