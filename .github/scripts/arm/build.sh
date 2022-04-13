@@ -51,7 +51,7 @@ tar -cJf postgrest-ubuntu-aarch64.tar.xz postgrest
 cd ~/$DOCKER_BUILD_PATH/build/linux_arm_v7
 tar -cJf postgrest-ubuntu-armv7.tar.xz postgrest
 
-cd ~
+cd ~/DOCKER_BUILD_PATH/..
 
 mkdir -p result
 mv ~/$DOCKER_BUILD_PATH/build/linux_arm64/*.tar.xz ~/result

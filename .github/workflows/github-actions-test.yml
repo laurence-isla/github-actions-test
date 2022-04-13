@@ -40,7 +40,7 @@ jobs:
           key: ${{ secrets.SSH_ARM_PRIVATE_KEY }}
           script_stop: true
           envs: GITHUB_COMMIT,DOCKER_REPO,DOCKER_USER,DOCKER_PASS,REMOTE_DIR
-          script: sh ~/$REMOTE_DIR/build.sh "$GITHUB_COMMIT" "$DOCKER_REPO" "$DOCKER_USER" "$DOCKER_PASS" "$REMOTE_DIR/docker_env"
+          script: bash ~/$REMOTE_DIR/build.sh "$GITHUB_COMMIT" "$DOCKER_REPO" "$DOCKER_USER" "$DOCKER_PASS" "$REMOTE_DIR/docker_env"
       - name: Download binaries from remote server
         uses: nicklasfrahm/scp-action@main
         with:
@@ -49,7 +49,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_ARM_PRIVATE_KEY }}
           fingerprint: ${{ secrets.SSH_ARM_FINGERPRINT }}
-          source: "result.tar.xz"
+          source: "${{ steps.Remote-Dir.outputs.remotepath }}/result.tar.xz"
           target: "result.tar.xz"
       - name: Extract downloaded binaries
         run: tar -xvf result.tar.xz && rm result.tar.xz
@@ -102,7 +102,7 @@ jobs:
           fingerprint: ${{ secrets.SSH_ARM_FINGERPRINT }}
           script_stop: true
           envs: GITHUB_COMMIT,DOCKER_REPO,DOCKER_USER,DOCKER_PASS,REMOTE_DIR,
-          script: sh ~/$REMOTE_DIR/docker-publish.sh "$GITHUB_COMMIT" "$DOCKER_REPO" "$DOCKER_USER" "$DOCKER_PASS" "$REMOTE_DIR/docker_env" "v$VERSION" "$ISPRERELEASE"
+          script: bash ~/$REMOTE_DIR/docker-publish.sh "$GITHUB_COMMIT" "$DOCKER_REPO" "$DOCKER_USER" "$DOCKER_PASS" "$REMOTE_DIR/docker_env" "v$VERSION" "$ISPRERELEASE"
 
   Clean-Arm-Server:
     name: Remove copied files from server
