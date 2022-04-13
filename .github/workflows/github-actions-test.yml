@@ -15,7 +15,9 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_ARM_PRIVATE_KEY }}
           fingerprint: ${{ secrets.SSH_ARM_FINGERPRINT }}
-          source: "result/*"
+          source: |
+            result/text1.txt
+            result/text2.txt
           target: "result/"
       - name: Test downloaded file from remote server
         run: |
