@@ -29,7 +29,7 @@ sudo docker logout
 trap clean_env sigint sigterm exit
 
 # Move to the docker build environment
-cd ~/DOCKER_BUILD_PATH
+cd ~/$DOCKER_BUILD_PATH
 
 # Push final images to Docker hub
 sudo docker buildx build --build-arg PGRST_GITHUB_COMMIT=$PGRST_GITHUB_COMMIT \
