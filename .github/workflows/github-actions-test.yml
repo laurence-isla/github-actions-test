@@ -2,7 +2,7 @@ name: GitHub Actions Test
 on: [push]
 jobs:
   Copy-To-Remote:
-    name: Build armv7/aarch64 (Cabal)
+    name: Copy to remote server
     runs-on: ubuntu-latest
     env:
       SHA: ${{ github.sha }}
@@ -34,7 +34,8 @@ jobs:
             sh github-test/test2.sh
 
   Copy-From-Remote:
-    name: Build armv7/aarch64 (Cabal)
+    name: Copy from remote server
+    needs: Copy-To-Remote
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.4.0
