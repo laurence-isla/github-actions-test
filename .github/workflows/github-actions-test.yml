@@ -84,8 +84,8 @@ jobs:
     needs:
       - Build-Cabal-Arm
     outputs:
-      version: "9.0.0.20220211"
-      isprerelease: "1"
+      version: "11.0.0"
+      isprerelease: ""
     steps:
       - uses: actions/checkout@v3
 
