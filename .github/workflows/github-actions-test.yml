@@ -56,7 +56,9 @@ jobs:
 
   Clean-Remote:
     name: Remove copied files from server
-    needs: Copy-From-Remote
+    needs:
+      - Copy-To-Remote
+      - Copy-From-Remote
     if: always()
     runs-on: ubuntu-latest
     steps:
