@@ -1,7 +1,7 @@
 name: GitHub Actions Test
 on: [push]
 jobs:
-  Build-Cabal-Arm:
+  Copy-To-Remote:
     name: Build armv7/aarch64 (Cabal)
     runs-on: ubuntu-latest
     env:
@@ -17,6 +17,7 @@ jobs:
           host: ${{ secrets.SSH_ARM_HOST }}
           username: ubuntu
           key: ${{ secrets.SSH_ARM_PRIVATE_KEY }}
+          fingerprint: ${{ secrets.SSH_ARM_FINGERPRINT }}
           source: ".github/workflows/files/*"
           target: "github-test"
           strip_components: 3
@@ -26,10 +27,17 @@ jobs:
           host: ${{ secrets.SSH_ARM_HOST }}
           username: ubuntu
           key: ${{ secrets.SSH_ARM_PRIVATE_KEY }}
+          fingerprint: ${{ secrets.SSH_ARM_FINGERPRINT }}
           envs: GITHUB_SHA,SHA
           script: |
             sh github-test/test1.sh "$GITHUB_SHA" "$SHA" "$TEST"
             sh github-test/test2.sh
+
+  Copy-From-Remote:
+    name: Build armv7/aarch64 (Cabal)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.4.0
       - name: Download files from remote server
         uses: nicklasfrahm/scp-action@main
         with:
@@ -42,9 +50,15 @@ jobs:
           target: "test1.sh"
       - name: Test downloaded file from remote server
         run: cat test1.sh
+
+  Clean-Remote:
+    name: Build armv7/aarch64 (Cabal)
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.4.0
       - name: Remove files from server
         uses: appleboy/ssh-action@master
-        if: always()
         with:
           host: ${{ secrets.SSH_ARM_HOST }}
           username: ubuntu
