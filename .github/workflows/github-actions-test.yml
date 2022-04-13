@@ -28,12 +28,12 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_ARM_PRIVATE_KEY }}
           source: ".github/scripts/arm/*"
-          target: ${{ step.Remote-Dir.outputs.remotepath }}
+          target: ${{ steps.Remote-Dir.outputs.remotepath }}
           strip_components: 3
       - name: Build ARM
         uses: appleboy/ssh-action@master
         env:
-          REMOTE_DIR: ${{ step.Remote-Dir.outputs.remotepath }}
+          REMOTE_DIR: ${{ steps.Remote-Dir.outputs.remotepath }}
         with:
           host: ${{ secrets.SSH_ARM_HOST }}
           username: ubuntu
