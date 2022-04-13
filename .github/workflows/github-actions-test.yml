@@ -1,46 +1,13 @@
 name: GitHub Actions Test
 on: [push]
 jobs:
-  Copy-To-Remote:
-    name: Copy to remote server
-    runs-on: ubuntu-latest
-    env:
-      SHA: ${{ github.sha }}
-      TEST: "v1.0.0/main"
-    outputs:
-      out: "output from Copy-To-Remote"
-    steps:
-      - uses: actions/checkout@v2.4.0
-      - name: Create directory
-        run: mkdir result
-      - name: Copy Files
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.SSH_ARM_HOST }}
-          username: ubuntu
-          key: ${{ secrets.SSH_ARM_PRIVATE_KEY }}
-          fingerprint: ${{ secrets.SSH_ARM_FINGERPRINT }}
-          source: ".github/workflows/files/*"
-          target: "github-test"
-          strip_components: 3
-      - name: Execute Files
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_ARM_HOST }}
-          username: ubuntu
-          key: ${{ secrets.SSH_ARM_PRIVATE_KEY }}
-          fingerprint: ${{ secrets.SSH_ARM_FINGERPRINT }}
-          envs: GITHUB_SHA,SHA
-          script: |
-            sh github-test/test1.sh "$GITHUB_SHA" "$SHA" "$TEST"
-            sh github-test/test2.sh
-
   Copy-From-Remote:
     name: Copy from remote server
     needs: Copy-To-Remote
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.4.0
+      - run: mkdir result
       - name: Download files from remote server
         uses: nicklasfrahm/scp-action@main
         with:
@@ -49,32 +16,8 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_ARM_PRIVATE_KEY }}
           fingerprint: ${{ secrets.SSH_ARM_FINGERPRINT }}
-          source: |
-            "github-test/test1.sh"
-            "github-test/test2.sh"
-          target: "."
+          source: "result/text1.txt"
+          target: "result/text1.txt"
       - name: Test downloaded file from remote server
         run: |
-          sh test1.sh "A" "B" "C"
-          sh test2.sh
-
-  Clean-Remote:
-    name: Remove copied files from server
-    needs:
-      - Copy-To-Remote
-      - Copy-From-Remote
-    if: always()
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2.4.0
-      - name: Remove files from server
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_ARM_HOST }}
-          username: ubuntu
-          key: ${{ secrets.SSH_ARM_PRIVATE_KEY }}
-          fingerprint: ${{ secrets.SSH_ARM_FINGERPRINT }}
-          envs: GITHUB_SHA,SHA
-          script: rm -rf ~/github-test
-      - name: Test output from previous job
-        run: echo ${{ needs.Copy-To-Remote.outputs.out }}
+          cat result/text1.txt
