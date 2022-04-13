@@ -89,8 +89,9 @@ jobs:
       - Prepare-Release
     env:
       GITHUB_COMMIT: "dcf7ade5bc70a31fe0e083e1527b74125a94aeda"
-      DOCKER_REPO: postgrest
+      DOCKER_REPO: "postgrest"
       DOCKER_USER: ${{ secrets.DOCKER_USER }}
+      DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
       VERSION: ${{ needs.Prepare-Release.outputs.version }}
       ISPRERELEASE: ${{ needs.Prepare-Release.outputs.isprerelease }}
     steps:
