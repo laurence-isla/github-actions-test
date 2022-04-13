@@ -27,6 +27,7 @@ jobs:
           host: ${{ secrets.SSH_ARM_HOST }}
           username: ubuntu
           key: ${{ secrets.SSH_ARM_PRIVATE_KEY }}
+          fingerprint: ${{ secrets.SSH_ARM_FINGERPRINT }}
           source: ".github/scripts/arm/*"
           target: ${{ steps.Remote-Dir.outputs.remotepath }}
           strip_components: 3
@@ -38,6 +39,8 @@ jobs:
           host: ${{ secrets.SSH_ARM_HOST }}
           username: ubuntu
           key: ${{ secrets.SSH_ARM_PRIVATE_KEY }}
+          fingerprint: ${{ secrets.SSH_ARM_FINGERPRINT }}
+          command_timeout: 120
           script_stop: true
           envs: GITHUB_COMMIT,DOCKER_REPO,DOCKER_USER,DOCKER_PASS,REMOTE_DIR
           script: bash ~/$REMOTE_DIR/build.sh "$GITHUB_COMMIT" "$DOCKER_REPO" "$DOCKER_USER" "$DOCKER_PASS" "$REMOTE_DIR"
@@ -103,24 +106,24 @@ jobs:
           script_stop: true
           envs: GITHUB_COMMIT,DOCKER_REPO,DOCKER_USER,DOCKER_PASS,REMOTE_DIR,
           script: bash ~/$REMOTE_DIR/docker-publish.sh "$GITHUB_COMMIT" "$DOCKER_REPO" "$DOCKER_USER" "$DOCKER_PASS" "$REMOTE_DIR" "v$VERSION" "$ISPRERELEASE"
-#
-#  Clean-Arm-Server:
-#    name: Remove copied files from server
-#    needs:
-#      - Build-Cabal-Arm
-#      - Release-Docker
-#    if: always()
-#    runs-on: ubuntu-latest
-#    env:
-#      REMOTE_DIR: ${{ needs.Build-Cabal-Arm.outputs.remotepath }}
-#    steps:
-#      - uses: actions/checkout@v2.4.0
-#      - name: Remove uploaded files from server
-#        uses: appleboy/ssh-action@master
-#        with:
-#          host: ${{ secrets.SSH_ARM_HOST }}
-#          username: ubuntu
-#          key: ${{ secrets.SSH_ARM_PRIVATE_KEY }}
-#          fingerprint: ${{ secrets.SSH_ARM_FINGERPRINT }}
-#          envs: REMOTE_DIR
-#          script: rm -rf $REMOTE_DIR
+
+  Clean-Arm-Server:
+    name: Remove copied files from server
+    needs:
+      - Build-Cabal-Arm
+      - Release-Docker
+    if: always()
+    runs-on: ubuntu-latest
+    env:
+      REMOTE_DIR: ${{ needs.Build-Cabal-Arm.outputs.remotepath }}
+    steps:
+      - uses: actions/checkout@v2.4.0
+      - name: Remove uploaded files from server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_ARM_HOST }}
+          username: ubuntu
+          key: ${{ secrets.SSH_ARM_PRIVATE_KEY }}
+          fingerprint: ${{ secrets.SSH_ARM_FINGERPRINT }}
+          envs: REMOTE_DIR
+          script: rm -rf $REMOTE_DIR
