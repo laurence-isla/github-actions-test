@@ -9,20 +9,25 @@ RUN apt-get update -y \
 
 # Install ghcup
 ENV BOOTSTRAP_HASKELL_NONINTERACTIVE=1
+ENV BOOTSTRAP_HASKELL_MINIMAL=1
 RUN bash -c "curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh"
 
 # Add ghcup to PATH
 ENV PATH=${PATH}:/root/.local/bin
 ENV PATH=${PATH}:/root/.ghcup/bin
 
-# Install cabal
 RUN bash -c "ghcup upgrade"
-RUN bash -c "ghcup install cabal 3.4.0.0"
-RUN bash -c "ghcup set cabal 3.4.0.0"
+
+# Install cabal
+RUN --mount=type=cache,target=~/.ghcup/bin \
+    bash -c "ghcup --cache install cabal 3.4.0.0"
+    && bash -c "ghcup set cabal 3.4.0.0"
 
 # Install GHC
-RUN bash -c "ghcup install ghc 8.10.7"
-RUN bash -c "ghcup set ghc 8.10.7"
+RUN --mount=type=cache,target=~/.ghcup/bin \
+    --mount=type=cache,target=~/.ghcup/ghc \
+    bash -c "ghcup --cache install ghc 8.10.7"
+    && bash -c "ghcup set ghc 8.10.7"
 
 # Update Path to include Cabal and GHC exports
 RUN bash -c "echo PATH="$HOME/.local/bin:$PATH" >> $HOME/.bashrc"
@@ -32,7 +37,10 @@ RUN bash -c "source $HOME/.bashrc"
 # Clone the repository
 RUN git clone https://github.com/PostgREST/postgrest.git /postgrest
 WORKDIR /postgrest
-RUN cabal v2-update && cabal v2-build
+RUN --mount=type=cache,target=~/.ghcup/bin \
+    --mount=type=cache,target=~/.ghcup/ghc \
+    --mount=type=cache,target=~/.cabal \
+    cabal v2-update && cabal v2-build
 
 # Arguments are declared here to save the above installation in cache
 ARG PGRST_GITHUB_COMMIT
@@ -42,8 +50,12 @@ RUN git pull origin main \
 
 # Build PostgREST
 RUN mkdir -p /build-export
-RUN cabal v2-update && cabal v2-build
-RUN PGRST_BIN=$(cabal exec which postgrest | tail -1) \
+RUN --mount=type=cache,target=~/.ghcup/bin \
+    --mount=type=cache,target=~/.ghcup/ghc \
+    --mount=type=cache,target=~/.cabal \
+    cabal v2-update \
+    && cabal v2-build \
+    && PGRST_BIN=$(cabal exec which postgrest | tail -1) \
     && mv $PGRST_BIN /build-export
 
 
@@ -60,9 +72,10 @@ COPY --from=postgrest-build /build-export /
 
 FROM ubuntu:focal AS postgrest
 
-RUN apt-get update -y
-RUN apt install libpq-dev zlib1g-dev jq gcc libnuma-dev -y
-RUN apt-get clean
+RUN apt-get update -y \
+    && apt-get install -y --no-install-recommends libpq-dev zlib1g-dev jq gcc libnuma-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY --from=postgrest-bin postgrest /usr/bin/postgrest
 

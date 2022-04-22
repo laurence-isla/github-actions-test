@@ -19,9 +19,6 @@ jobs:
       remotepath: ${{ steps.Remote-Dir.outputs.remotepath }}
     env:
       GITHUB_COMMIT: "dcf7ade5bc70a31fe0e083e1527b74125a94aeda"
-      DOCKER_REPO: "laurenceisla"
-      DOCKER_USER: "laurenceisla"
-      DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
     steps:
       - uses: actions/checkout@v2.4.0
       - id: Remote-Dir
@@ -48,8 +45,8 @@ jobs:
           fingerprint: ${{ secrets.SSH_ARM_FINGERPRINT }}
           command_timeout: 120m
           script_stop: true
-          envs: GITHUB_COMMIT,DOCKER_REPO,DOCKER_USER,DOCKER_PASS,REMOTE_DIR
-          script: bash ~/$REMOTE_DIR/build.sh "$GITHUB_COMMIT" "$DOCKER_REPO" "$DOCKER_USER" "$DOCKER_PASS" "$REMOTE_DIR"
+          envs: GITHUB_COMMIT,REMOTE_DIR
+          script: bash ~/$REMOTE_DIR/build.sh "$GITHUB_COMMIT" "$REMOTE_DIR"
       - name: Download binaries from remote server
         uses: nicklasfrahm/scp-action@main
         with:
