@@ -20,13 +20,13 @@ RUN bash -c "ghcup upgrade"
 
 # Install cabal
 RUN --mount=type=cache,target=~/.ghcup/bin \
-    bash -c "ghcup --cache install cabal 3.4.0.0"
+    bash -c "ghcup --cache install cabal 3.4.0.0" \
     && bash -c "ghcup set cabal 3.4.0.0"
 
 # Install GHC
 RUN --mount=type=cache,target=~/.ghcup/bin \
     --mount=type=cache,target=~/.ghcup/ghc \
-    bash -c "ghcup --cache install ghc 8.10.7"
+    bash -c "ghcup --cache install ghc 8.10.7" \
     && bash -c "ghcup set ghc 8.10.7"
 
 # Update Path to include Cabal and GHC exports
