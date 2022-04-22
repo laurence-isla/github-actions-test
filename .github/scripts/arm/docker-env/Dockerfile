@@ -1,5 +1,3 @@
-# syntax=docker/dockerfile:1.3
-
 # Build PostgREST for ARM architectures
 
 FROM ubuntu:focal as postgrest-build
@@ -21,15 +19,12 @@ ENV PATH=${PATH}:/root/.ghcup/bin
 RUN bash -c "ghcup upgrade"
 
 # Install cabal
-RUN --mount=type=cache,target=~/.ghcup/bin \
-    bash -c "ghcup install cabal 3.4.0.0" \
-    && bash -c "ghcup set cabal 3.4.0.0"
+RUN bash -c "ghcup install cabal 3.4.0.0"
+RUN bash -c "ghcup set cabal 3.4.0.0"
 
 # Install GHC
-RUN --mount=type=cache,target=~/.ghcup/bin \
-    --mount=type=cache,target=~/.ghcup/ghc \
-    bash -c "ghcup install ghc 8.10.7" \
-    && bash -c "ghcup set ghc 8.10.7"
+RUN bash -c "ghcup install ghc 8.10.7"
+RUN bash -c "ghcup set ghc 8.10.7"
 
 # Update Path to include Cabal and GHC exports
 RUN bash -c "echo PATH="$HOME/.local/bin:$PATH" >> $HOME/.bashrc"
@@ -39,10 +34,7 @@ RUN bash -c "source $HOME/.bashrc"
 # Clone the repository
 RUN git clone https://github.com/PostgREST/postgrest.git /postgrest
 WORKDIR /postgrest
-RUN --mount=type=cache,target=~/.ghcup/bin \
-    --mount=type=cache,target=~/.ghcup/ghc \
-    --mount=type=cache,target=~/.cabal \
-    cabal v2-update && cabal v2-build
+RUN cabal v2-update && cabal v2-build
 
 # Arguments are declared here to save the above installation in cache
 ARG PGRST_GITHUB_COMMIT
@@ -52,12 +44,8 @@ RUN git pull origin main \
 
 # Build PostgREST
 RUN mkdir -p /build-export
-RUN --mount=type=cache,target=~/.ghcup/bin \
-    --mount=type=cache,target=~/.ghcup/ghc \
-    --mount=type=cache,target=~/.cabal \
-    cabal v2-update \
-    && cabal v2-build \
-    && PGRST_BIN=$(cabal exec which postgrest | tail -1) \
+RUN cabal v2-update && cabal v2-build
+RUN PGRST_BIN=$(cabal exec which postgrest | tail -1) \
     && mv $PGRST_BIN /build-export
 
 
