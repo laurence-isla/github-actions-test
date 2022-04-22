@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1.3
+
 # Build PostgREST for ARM architectures
 
 FROM ubuntu:focal as postgrest-build
