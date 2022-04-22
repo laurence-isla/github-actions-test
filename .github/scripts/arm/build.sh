@@ -15,8 +15,14 @@ DOCKER_BUILD_PATH="$SCRIPT_PATH/docker-env"
 # Move to the docker build environment
 cd ~/$DOCKER_BUILD_PATH
 
+sudo docker buildx build --build-arg PGRST_GITHUB_COMMIT=$PGRST_GITHUB_COMMIT \
+                         --build-arg BUILDKIT_INLINE_CACHE=1 \
+                         --platform linux/arm/v7,linux/arm64 \
+                         --target=postgrest-build .
+
 # Generate and copy binaries to the local filesystem
 sudo docker buildx build --build-arg PGRST_GITHUB_COMMIT=$PGRST_GITHUB_COMMIT \
+                         --build-arg BUILDKIT_INLINE_CACHE=1 \
                          --platform linux/arm/v7,linux/arm64 \
                          --target=postgrest-bin \
                          -o result .

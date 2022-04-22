@@ -38,6 +38,7 @@ cd ~/$DOCKER_BUILD_PATH
 #       be added to the manifest if they are not in the registry beforehand.
 #       This image must be manually deleted from Docker Hub at the end of the process.
 sudo docker buildx build --build-arg PGRST_GITHUB_COMMIT=$PGRST_GITHUB_COMMIT \
+                         --build-arg BUILDKIT_INLINE_CACHE=1 \
                          --platform linux/arm/v7,linux/arm64 \
                          -t $DOCKER_REPO/postgrest:$PGRST_VERSION-arm \
                          --push .
