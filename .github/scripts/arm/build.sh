@@ -11,10 +11,10 @@ SCRIPT_DIR="$2"
 DOCKER_BUILD_DIR="$SCRIPT_DIR/docker-env"
 
 install_packages() {
-  apt-get update -y
-  apt-get upgrade -y
-  apt-get install -y git build-essential curl libffi-dev libffi7 libgmp-dev libgmp10 libncurses-dev libncurses5 libtinfo5 llvm libnuma-dev zlib1g-dev libpq-dev jq gcc
-  apt-get clean
+  sudo apt-get update -y
+  sudo apt-get upgrade -y
+  sudo apt-get install -y git build-essential curl libffi-dev libffi7 libgmp-dev libgmp10 libncurses-dev libncurses5 libtinfo5 llvm libnuma-dev zlib1g-dev libpq-dev jq gcc
+  sudo apt-get clean
 }
 
 install_ghcup() {
@@ -36,12 +36,13 @@ install_ghc() {
 
 install_packages
 
+ghcup --version || install_ghcup
+
 # Add ghcup to the PATH for this session
 [ -f ~/.ghcup/env ] && source ~/.ghcup/env
 
-ghcup --version || install_ghcup
 cabal --version || install_cabal
-ghcup --version || install_ghc
+ghc --version || install_ghc
 
 cd ~/$SCRIPT_DIR
 
