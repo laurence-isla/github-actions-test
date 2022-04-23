@@ -3,9 +3,9 @@
 FROM ubuntu:focal AS postgrest
 
 RUN apt-get update -y \
-    && apt install libpq-dev zlib1g-dev jq gcc libnuma-dev -y
+    && apt install -y --no-install-recommends libpq-dev zlib1g-dev jq gcc libnuma-dev \
     && apt-get clean \
-    && rm
+    && rm -rf /var/lib/apt/lists/*
 
 COPY postgrest /usr/bin/postgrest
 

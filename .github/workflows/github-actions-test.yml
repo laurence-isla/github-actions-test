@@ -12,7 +12,7 @@ on:
 
 jobs:
   Build-Cabal-Arm:
-    name: Build armv7/aarch64 (Cabal)
+    name: Build aarch64 (Cabal)
     if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     outputs:
@@ -103,9 +103,6 @@ jobs:
 
           tar cJvf "release-bundle/postgrest-v$VERSION-ubuntu-aarch64.tar.xz" \
             -C artifacts/postgrest-ubuntu-aarch64 postgrest
-
-          tar cJvf "release-bundle/postgrest-v$VERSION-ubuntu-armv7.tar.xz" \
-            -C artifacts/postgrest-ubuntu-armv7 postgrest
 
       - name: Save release bundle
         uses: actions/upload-artifact@v3
