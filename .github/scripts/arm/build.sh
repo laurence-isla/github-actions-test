@@ -47,8 +47,8 @@ ghc --version || install_ghc
 cd ~/$SCRIPT_DIR
 
 # Clone the repository and build the project
-git clone https://github.com/PostgREST/postgrest.git /postgrest
-cd ./postgrest
+git clone https://github.com/PostgREST/postgrest.git
+cd postgrest
 git checkout $PGRST_GITHUB_COMMIT
 cabal v2-update && cabal v2-build
 
