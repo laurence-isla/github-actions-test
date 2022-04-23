@@ -18,7 +18,7 @@ jobs:
     outputs:
       remotepath: ${{ steps.Remote-Dir.outputs.remotepath }}
     env:
-      GITHUB_COMMIT: "dcf7ade5bc70a31fe0e083e1527b74125a94aeda"
+      GITHUB_COMMIT: "07d619981e3c2725bb5fd2dc9b264240c7d8035d"
     steps:
       - uses: actions/checkout@v2.4.0
       - id: Remote-Dir
@@ -75,8 +75,8 @@ jobs:
     needs:
       - Build-Cabal-Arm
     outputs:
-      version: "9.0.0.20220211"
-      isprerelease: "1"
+      version: "10.0.0"
+      isprerelease: ""
     steps:
       - uses: actions/checkout@v3
 
@@ -131,7 +131,7 @@ jobs:
       - Build-Cabal-Arm
       - Prepare-Release
     env:
-      GITHUB_COMMIT: "dcf7ade5bc70a31fe0e083e1527b74125a94aeda"
+      GITHUB_COMMIT: "07d619981e3c2725bb5fd2dc9b264240c7d8035d"
       DOCKER_REPO: laurenceisla
       DOCKER_USER: laurenceisla
       DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
