@@ -23,16 +23,18 @@ jobs:
             cabal-version: '3.6.0.0'
         - name: Check installation
           run: cabal --version && ghc --version
-        - name: Check dir for cabal-store
-          run: echo ${{ steps.windows-haskell-cabal.outputs.cabal-store }}
-        - name: Check dir list for home
-          run: dir ~
-        - name: Update cabal package database
-          run: cabal v2-update
         - uses: actions/cache@v3
           name: Cache cabal files
           with:
             path: |
               ${{ steps.windows-haskell-cabal.outputs.cabal-store }}
               dist-newstyle
-            key: ${{ runner.os }}-${{ hashFiles('postgrest.cabal') }}
+            key: ${{ runner.os }}-${{ hashFiles('simpleapp.cabal') }}
+        - name: Run the app
+          run: runhaskell app\Main.hs
+        - name: Update cabal package database
+          run: cabal v2-update
+        - name: Build the app
+          run: cabal v2-build
+        - name: Check where the binary is built
+          run: cabal exec which postgrest
