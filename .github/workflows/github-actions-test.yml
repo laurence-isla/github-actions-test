@@ -40,7 +40,7 @@ jobs:
           run: dir ~
         - name: Check where the binary is built
           id: windows-binary
-          run: echo "::set-output name=path::$(cabal exec which simpleapp)"
+          run: echo "::set-output name=path::$(cabal exec where simpleapp)"
         - name: Upload binary
           uses: actions/upload-artifact@v3
           with:
