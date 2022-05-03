@@ -37,4 +37,4 @@ jobs:
         - name: Build the app
           run: cabal v2-build
         - name: Check where the binary is built
-          run: cabal exec which postgrest
+          run: cabal exec which simpleapp
