@@ -36,5 +36,14 @@ jobs:
           run: cabal v2-update
         - name: Build the app
           run: cabal v2-build
+        - name: Test local
+          run: dir ~
         - name: Check where the binary is built
-          run: cabal exec which simpleapp
+          id: windows-binary
+          run: echo "::set-output name=path::$(cabal exec which simpleapp)"
+        - name: Upload binary
+          uses: actions/upload-artifact@v3
+            with:
+              name: simpleapp
+              path: ${{ steps.windows-binary.outputs.path }}
+              if-no-files-found: error
