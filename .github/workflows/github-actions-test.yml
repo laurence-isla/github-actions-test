@@ -45,5 +45,5 @@ jobs:
           uses: actions/upload-artifact@v3
           with:
             name: simpleapp
-            path: ${{ steps.windows-binary.outputs.path }}.exe
+            path: ${{ steps.windows-binary.outputs.path }}
             if-no-files-found: error
