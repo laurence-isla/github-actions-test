@@ -12,28 +12,28 @@ on:
 
 jobs:
     Build-Windows-Cabal:
-    name: Build Windows (Cabal)
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: haskell/actions/setup@v2
-        id: windows-haskell-cabal
-        with:
-          ghc-version: '8.10.7'
-          cabal-version: '3.6.0.0'
-      - name: Check installation
-        run: cabal --version && ghc --version
-      - name: Check dir for cabal-store
-        run: echo ${{ steps.windows-haskell-cabal.outputs.cabal-store }}
-      - name: Check dir list for home
-        run: dir ~
-#      - name: Update cabal package database
-#        run: cabal v2-update
-#      - uses: actions/cache@v3
-#        name: Cache cabal files
-#        with:
-#          path: |
-#            ${{ steps.windows-haskell-cabal.outputs.cabal-store }}
-#            dist-newstyle
-#          key: ${{ runner.os }}-${{ hashFiles('postgrest.cabal') }}
-    # artifact: postgrest-windows-x64
+      name: Build Windows (Cabal)
+      runs-on: windows-latest
+      steps:
+        - uses: actions/checkout@v3
+        - uses: haskell/actions/setup@v2
+          id: windows-haskell-cabal
+          with:
+            ghc-version: '8.10.7'
+            cabal-version: '3.6.0.0'
+        - name: Check installation
+          run: cabal --version && ghc --version
+        - name: Check dir for cabal-store
+          run: echo ${{ steps.windows-haskell-cabal.outputs.cabal-store }}
+        - name: Check dir list for home
+          run: dir ~
+  #      - name: Update cabal package database
+  #        run: cabal v2-update
+  #      - uses: actions/cache@v3
+  #        name: Cache cabal files
+  #        with:
+  #          path: |
+  #            ${{ steps.windows-haskell-cabal.outputs.cabal-store }}
+  #            dist-newstyle
+  #          key: ${{ runner.os }}-${{ hashFiles('postgrest.cabal') }}
+      # artifact: postgrest-windows-x64
