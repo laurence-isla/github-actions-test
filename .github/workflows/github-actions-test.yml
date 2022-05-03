@@ -27,13 +27,12 @@ jobs:
           run: echo ${{ steps.windows-haskell-cabal.outputs.cabal-store }}
         - name: Check dir list for home
           run: dir ~
-  #      - name: Update cabal package database
-  #        run: cabal v2-update
-  #      - uses: actions/cache@v3
-  #        name: Cache cabal files
-  #        with:
-  #          path: |
-  #            ${{ steps.windows-haskell-cabal.outputs.cabal-store }}
-  #            dist-newstyle
-  #          key: ${{ runner.os }}-${{ hashFiles('postgrest.cabal') }}
-      # artifact: postgrest-windows-x64
+        - name: Update cabal package database
+          run: cabal v2-update
+        - uses: actions/cache@v3
+          name: Cache cabal files
+          with:
+            path: |
+              ${{ steps.windows-haskell-cabal.outputs.cabal-store }}
+              dist-newstyle
+            key: ${{ runner.os }}-${{ hashFiles('postgrest.cabal') }}
