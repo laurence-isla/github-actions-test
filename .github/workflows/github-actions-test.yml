@@ -16,11 +16,11 @@ jobs:
       runs-on: windows-latest
       steps:
         - uses: actions/checkout@v3
-#        - uses: haskell/actions/setup@v2
-#          id: windows-haskell-setup
-#          with:
-#            ghc-version: '8.10.7'
-#            cabal-version: '3.6.0.0'
+        - uses: haskell/actions/setup@v2
+          id: windows-haskell-setup
+          with:
+            ghc-version: '8.10.7'
+            cabal-version: '3.6.0.0'
         - name: Update the PATH with PGBIN
           run: Add-Content $env:GITHUB_PATH $env:PGBIN
         - name: Test PSQL in PATH (without semicolon)
@@ -29,19 +29,19 @@ jobs:
           run: |
             which grep
             where grep
-#        - uses: actions/cache@v3
-#          name: Cache cabal files
-#          with:
-#            path: |
-#              ${{ steps.windows-haskell-setup.outputs.cabal-store }}
-#              dist-newstyle
-#            key: ${{ runner.os }}-${{ hashFiles('simpleapp.cabal') }}
-#        - name: Update and build
-#          id: windows-build
-#          run: |
-#            mkdir result
-#            cabal v2-update
-#            cabal v2-install exe:simpleapp --install-method=copy --installdir=result
+        - uses: actions/cache@v3
+          name: Cache cabal files
+          with:
+            path: |
+              ${{ steps.windows-haskell-setup.outputs.cabal-store }}
+              dist-newstyle
+            key: ${{ runner.os }}-${{ hashFiles('simpleapp.cabal') }}
+        - name: Update and build
+          id: windows-build
+          run: |
+            mkdir result
+            cabal v2-update
+            cabal v2-install exe:simpleapp --install-method=copy --installdir=result
 #        - name: Upload binary
 #          uses: actions/upload-artifact@v3
 #          with:
