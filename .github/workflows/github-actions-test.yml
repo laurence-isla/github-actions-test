@@ -25,6 +25,10 @@ jobs:
           run: Add-Content $env:GITHUB_PATH $env:PGBIN
         - name: Test PSQL in PATH (without semicolon)
           run: psql --version
+        - name: Check where grep is installed
+          run: |
+            which grep
+            where grep
 #        - uses: actions/cache@v3
 #          name: Cache cabal files
 #          with:
