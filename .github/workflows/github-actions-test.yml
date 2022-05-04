@@ -23,8 +23,8 @@ jobs:
 #            cabal-version: '3.6.0.0'
         - name: Check the PATH before
           run: $env:PATH
-        - name: Add pg binaries to the path
-          run: [Environment]::SetEnvironmentVariable("PATH", $env:PATH + $env:PGBIN, [EnvironmentVariableTarget]::Machine)
+        - name: Update the PATH with PGBIN
+          run: Add-Content $env:GITHUB_PATH ";$env:PGBIN"
         - name: Check the updated PATH
           run: $env:PATH
         - name: Test PSQL (in PGBIN)
