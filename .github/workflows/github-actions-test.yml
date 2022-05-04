@@ -36,7 +36,8 @@ jobs:
           run: |
             cabal v2-update
             cabal v2-build
-            mv (cabal exec where simpleapp) simpleapp.exe
+        - name: Move files
+          run: mv (cabal exec where simpleapp) simpleapp.exe
         - name: Upload binary
           uses: actions/upload-artifact@v3
           with:
