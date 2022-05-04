@@ -22,15 +22,16 @@ jobs:
 #            ghc-version: '8.10.7'
 #            cabal-version: '3.6.0.0'
         - name: Check the PATH before
-          run: $env:PATH
+          run: $env:GITHUB_PATH
         - name: Update the PATH with PGBIN
           run: Add-Content $env:GITHUB_PATH ";$env:PGBIN"
         - name: Check the updated PATH
-          run: $env:PATH
+          run: $env:GITHUB_PATH
         - name: Test PSQL (in PGBIN)
-          run: $env:PGBINpsql --help
+          run: $env:PGBINpsql
         - name: Test PSQL (in PATH)
-          run: psql --help
+          if: always()
+          run: psql
 #        - uses: actions/cache@v3
 #          name: Cache cabal files
 #          with:
