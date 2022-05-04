@@ -34,8 +34,9 @@ jobs:
           run: runhaskell app\Main.hs
         - name: Update, build and move
           run: |
-            cabal v2-update
-            cabal v2-build
+            cabal v2-update && cabal v2-build
+            $var = echo "$(cabal exec where simpleapp)"
+            mkdir result && mv $var result/simpleapp.exe
         - name: Move files
           run: mv (cabal exec where simpleapp) simpleapp.exe
         - name: Upload binary
