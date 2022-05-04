@@ -26,10 +26,7 @@ jobs:
         - name: Check where grep is installed (where)
           run: where grep
         - name: Set dependencies
-          run: |
-            Add-Content $env:GITHUB_PATH $env:PGBIN
-            echo "GREP=$(which grep) $(cygpath --unix '${{ steps.windows-haskell-setup.outputs.cabal-exe }}') "'$@ '"-w $(cygpath --unix '${{ steps.windows-haskell-setup.outputs.ghc-exe }}')" > cabal.sh
-            chmod +x cabal.sh
+          run: Add-Content $env:GITHUB_PATH $env:PGBIN
         - name: Test PSQL in PATH
           run: psql --version
         - uses: actions/cache@v3
@@ -44,7 +41,7 @@ jobs:
           run: |
             mkdir result
             cabal v2-update
-            cabal v2-install exe:simpleapp --install-method=copy --installdir=result
+            cabal v2-install exe:simpleapp --install-method=copy --installdir=result --extra-prog-path=/bin
         - name: Upload binary
           uses: actions/upload-artifact@v3
           with:
