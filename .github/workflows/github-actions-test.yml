@@ -21,26 +21,26 @@ jobs:
           with:
             ghc-version: '8.10.7'
             cabal-version: '3.6.0.0'
-        - name: Check installation
-          run: cabal --version && ghc --version
-        - uses: actions/cache@v3
-          name: Cache cabal files
-          with:
-            path: |
-              ${{ steps.windows-haskell-setup.outputs.cabal-store }}
-              dist-newstyle
-            key: ${{ runner.os }}-${{ hashFiles('simpleapp.cabal') }}
-        - name: Run the app
-          run: runhaskell app\Main.hs
-        - name: Update and build
-          id: windows-build
-          run: |
-            mkdir result
-            cabal v2-update
-            cabal v2-install exe:simpleapp --install-method=copy --installdir=result
-        - name: Upload binary
-          uses: actions/upload-artifact@v3
-          with:
-            name: simpleapp
-            path: result/simpleapp.exe
-            if-no-files-found: error
+        - name: Test Chocolatey
+          run: choco install postgresql --ia '--enable-components commandlinetools'
+        - name: Test PSQL
+          run: psql --version
+#        - uses: actions/cache@v3
+#          name: Cache cabal files
+#          with:
+#            path: |
+#              ${{ steps.windows-haskell-setup.outputs.cabal-store }}
+#              dist-newstyle
+#            key: ${{ runner.os }}-${{ hashFiles('simpleapp.cabal') }}
+#        - name: Update and build
+#          id: windows-build
+#          run: |
+#            mkdir result
+#            cabal v2-update
+#            cabal v2-install exe:simpleapp --install-method=copy --installdir=result
+#        - name: Upload binary
+#          uses: actions/upload-artifact@v3
+#          with:
+#            name: simpleapp
+#            path: result/simpleapp.exe
+#            if-no-files-found: error
