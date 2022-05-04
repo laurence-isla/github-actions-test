@@ -32,17 +32,15 @@ jobs:
             key: ${{ runner.os }}-${{ hashFiles('simpleapp.cabal') }}
         - name: Run the app
           run: runhaskell app\Main.hs
-        - name: Update, build and get the binary path
+        - name: Update and build
           id: windows-build
           run: |
+            mkdir result
             cabal v2-update
-            cabal v2-build
-            echo "::set-output name=binpath::$(cabal exec where simpleapp)"
-        - name: Move the binary
-          run: mkdir result && mv ${{ steps.windows-build.outputs.binpath }} result/simpleapp.exe
+            cabal v2-install exe:simpleapp --install-method=copy --installdir=result
         - name: Upload binary
           uses: actions/upload-artifact@v3
           with:
             name: simpleapp
-            path: simpleapp.exe
+            path: result/simpleapp.exe
             if-no-files-found: error
