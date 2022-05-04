@@ -16,6 +16,7 @@ jobs:
       runs-on: windows-latest
       steps:
         - uses: actions/checkout@v3
+        - uses: msys2/setup-msys2@v2
         - uses: haskell/actions/setup@v2
           id: windows-haskell-setup
           with:
@@ -37,7 +38,7 @@ jobs:
           run: |
             mkdir result
             cabal v2-update
-            cabal v2-install exe:simpleapp --install-method=copy --installdir=result --extra-prog-path=C:\msys64\usr\bin
+            cabal v2-install exe:simpleapp --install-method=copy --installdir=result
         - name: Upload binary
           uses: actions/upload-artifact@v3
           with:
