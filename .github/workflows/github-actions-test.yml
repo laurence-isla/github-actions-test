@@ -27,7 +27,7 @@ jobs:
           run: grep --help
         - name: Check where egrep is installed
           run: egrep
-        - name Check egrep
+        - name: Check egrep
           run: egrep --help
 #        - name: Set dependencies
 #          run: Add-Content $env:GITHUB_PATH $env:PGBIN
