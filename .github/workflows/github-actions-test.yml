@@ -22,11 +22,11 @@ jobs:
 #            ghc-version: '8.10.7'
 #            cabal-version: '3.6.0.0'
         - name: Check the PATH before
-          run: echo "%PATH%"
+          run: $env:PATH
         - name: Add pg binaries to the path
-          run: setx /m PATH "%PATH%;$env:PGBIN"
+          run: setx /m PATH "$env:PATH;$env:PGBIN"
         - name: Check the updated PATH
-          run: echo "%PATH%"
+          run: $env:PATH
         - name: Test PSQL (in PGBIN)
           run: $env:PGBINpsql --version
         - name: Test PSQL (in PATH)
