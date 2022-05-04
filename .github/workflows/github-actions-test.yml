@@ -21,8 +21,8 @@ jobs:
 #          with:
 #            ghc-version: '8.10.7'
 #            cabal-version: '3.6.0.0'
-        - name: Test Chocolatey
-          run: choco install postgresql --ia '--enable-components commandlinetools'
+        - name: Add pg binaries to the path
+          run: setx /m PATH "%PATH%;$env:PGBIN"
         - name: Test PSQL
           run: psql.exe --version
 #        - uses: actions/cache@v3
