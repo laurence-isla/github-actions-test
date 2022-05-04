@@ -16,35 +16,39 @@ jobs:
       runs-on: windows-latest
       steps:
         - uses: actions/checkout@v3
-        - uses: haskell/actions/setup@v2
-          id: windows-haskell-setup
-          with:
-            ghc-version: '8.10.7'
-            cabal-version: '3.6.0.0'
+#        - uses: haskell/actions/setup@v2
+#          id: windows-haskell-setup
+#          with:
+#            ghc-version: '8.10.7'
+#            cabal-version: '3.6.0.0'
         - name: Check where grep is installed
           run: which grep
-        - name: Check where grep is installed (where)
-          run: where grep
-        - name: Set dependencies
-          run: Add-Content $env:GITHUB_PATH $env:PGBIN
-        - name: Test PSQL in PATH
-          run: psql --version
-        - uses: actions/cache@v3
-          name: Cache cabal files
-          with:
-            path: |
-              ${{ steps.windows-haskell-setup.outputs.cabal-store }}
-              dist-newstyle
-            key: ${{ runner.os }}-${{ hashFiles('simpleapp.cabal') }}
-        - name: Update and build
-          id: windows-build
-          run: |
-            mkdir result
-            cabal v2-update
-            cabal v2-install exe:simpleapp --install-method=copy --installdir=result --extra-prog-path=/bin
-        - name: Upload binary
-          uses: actions/upload-artifact@v3
-          with:
-            name: simpleapp
-            path: result/simpleapp.exe
-            if-no-files-found: error
+        - name: Check grep
+          run: grep --help
+        - name: Check where egrep is installed
+          run: egrep
+        - name Check egrep
+          run: egrep --help
+#        - name: Set dependencies
+#          run: Add-Content $env:GITHUB_PATH $env:PGBIN
+#        - name: Test PSQL in PATH
+#          run: psql --version
+#        - uses: actions/cache@v3
+#          name: Cache cabal files
+#          with:
+#            path: |
+#              ${{ steps.windows-haskell-setup.outputs.cabal-store }}
+#              dist-newstyle
+#            key: ${{ runner.os }}-${{ hashFiles('simpleapp.cabal') }}
+#        - name: Update and build
+#          id: windows-build
+#          run: |
+#            mkdir result
+#            cabal v2-update
+#            cabal v2-install exe:simpleapp --install-method=copy --installdir=result --extra-prog-path=/bin
+#        - name: Upload binary
+#          uses: actions/upload-artifact@v3
+#          with:
+#            name: simpleapp
+#            path: result/simpleapp.exe
+#            if-no-files-found: error
