@@ -22,13 +22,13 @@ jobs:
 #            ghc-version: '8.10.7'
 #            cabal-version: '3.6.0.0'
         - name: Check the PATH before
-          run: $Env:PATH
+          run: $env:PATH
         - name: Add pg binaries to the path
-          run: [Environment]::SetEnvironmentVariable("PATH", $Env:PATH + $Env:PGBIN, [EnvironmentVariableTarget]::Machine)
+          run: [Environment]::SetEnvironmentVariable("PATH", $env:PATH + $env:PGBIN, [EnvironmentVariableTarget]::Machine)
         - name: Check the updated PATH
-          run: $Env:PATH
+          run: $env:PATH
         - name: Test PSQL (in PGBIN)
-          run: $Env:PGBINpsql --help
+          run: $env:PGBINpsql --help
         - name: Test PSQL (in PATH)
           run: psql --help
 #        - uses: actions/cache@v3
