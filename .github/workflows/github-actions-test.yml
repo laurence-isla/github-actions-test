@@ -22,7 +22,7 @@ jobs:
 #            ghc-version: '8.10.7'
 #            cabal-version: '3.6.0.0'
         - name: Update the PATH with PGBIN
-          run: Add-Content $env:GITHUB_PATH "$env:PGBIN"
+          run: Add-Content $env:GITHUB_PATH $env:PGBIN
         - name: Test PSQL in PATH (without semicolon)
           run: psql --version
 #        - uses: actions/cache@v3
