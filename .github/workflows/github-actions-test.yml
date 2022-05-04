@@ -17,7 +17,7 @@ jobs:
       steps:
         - uses: actions/checkout@v3
         - uses: haskell/actions/setup@v2
-          id: windows-haskell-cabal
+          id: windows-haskell-setup
           with:
             ghc-version: '8.10.7'
             cabal-version: '3.6.0.0'
@@ -27,18 +27,19 @@ jobs:
           name: Cache cabal files
           with:
             path: |
-              ${{ steps.windows-haskell-cabal.outputs.cabal-store }}
+              ${{ steps.windows-haskell-setup.outputs.cabal-store }}
               dist-newstyle
             key: ${{ runner.os }}-${{ hashFiles('simpleapp.cabal') }}
         - name: Run the app
           run: runhaskell app\Main.hs
-        - name: Update, build and move
+        - name: Update, build and get the binary path
+          id: windows-build
           run: |
-            cabal v2-update && cabal v2-build
-            $var = echo "$(cabal exec where simpleapp)"
-            mkdir result && mv $var result/simpleapp.exe
-        - name: Move files
-          run: mv (cabal exec where simpleapp) simpleapp.exe
+            cabal v2-update
+            cabal v2-build
+            echo "::set-output name=binpath::$(cabal exec which simpleapp)"
+        - name: Move the binary
+          run: mkdir result && mv ${{ steps.windows-build.outputs.binpath }} result/simpleapp.exe
         - name: Upload binary
           uses: actions/upload-artifact@v3
           with:
