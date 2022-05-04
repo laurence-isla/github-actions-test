@@ -37,7 +37,7 @@ jobs:
           run: |
             cabal v2-update
             cabal v2-build
-            echo "::set-output name=binpath::$(cabal exec which simpleapp)"
+            echo "::set-output name=binpath::$(cabal exec where simpleapp)"
         - name: Move the binary
           run: mkdir result && mv ${{ steps.windows-build.outputs.binpath }} result/simpleapp.exe
         - name: Upload binary
