@@ -21,14 +21,12 @@ jobs:
 #          with:
 #            ghc-version: '8.10.7'
 #            cabal-version: '3.6.0.0'
-        - name: Check where grep is installed
-          run: which grep
-        - name: Check grep
-          run: grep --help
-        - name: Check where egrep is installed
-          run: egrep
-        - name: Check egrep
-          run: egrep --help
+        - name: Check where grep is installed 1
+          run: Get-ChildItem grep -Path / -File -Recurse -ErrorAction SilentlyContinue
+        - name: Check where sgrep is installed 2
+          run: Get-ChildItem grep -Path C:\ -File -Recurse -ErrorAction SilentlyContinue
+        - name: Check where sgrep is installed 3
+          run: Get-ChildItem grep.exe -Path C:\ -File -Recurse -ErrorAction SilentlyContinue
 #        - name: Set dependencies
 #          run: Add-Content $env:GITHUB_PATH $env:PGBIN
 #        - name: Test PSQL in PATH
