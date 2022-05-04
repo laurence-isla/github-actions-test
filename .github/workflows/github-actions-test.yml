@@ -16,22 +16,22 @@ jobs:
       runs-on: windows-latest
       steps:
         - uses: actions/checkout@v3
-#        - uses: haskell/actions/setup@v2
-#          id: windows-haskell-setup
-#          with:
-#            ghc-version: '8.10.7'
-#            cabal-version: '3.6.0.0'
-        - name: Install dependencies
-          run: |
-            Add-Content $env:GITHUB_PATH $env:PGBIN
-            cabal exec -- pacman -Syu --noconfirm
-            cabal exec -- pacman -S msys2-keyring --noconfirm
-        - name: Test PSQL in PATH (without semicolon)
-          run: psql --version
+        - uses: haskell/actions/setup@v2
+          id: windows-haskell-setup
+          with:
+            ghc-version: '8.10.7'
+            cabal-version: '3.6.0.0'
         - name: Check where grep is installed
           run: which grep
         - name: Check where grep is installed (where)
           run: where grep
+        - name: Set dependencies
+          run: |
+            Add-Content $env:GITHUB_PATH $env:PGBIN
+            echo "GREP=$(which grep) $(cygpath --unix '${{ steps.windows-haskell-setup.outputs.cabal-exe }}') "'$@ '"-w $(cygpath --unix '${{ steps.windows-haskell-setup.outputs.ghc-exe }}')" > cabal.sh
+            chmod +x cabal.sh
+        - name: Test PSQL in PATH
+          run: psql --version
         - uses: actions/cache@v3
           name: Cache cabal files
           with:
