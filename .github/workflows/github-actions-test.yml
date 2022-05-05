@@ -17,6 +17,10 @@ jobs:
       steps:
         - uses: actions/checkout@v3
         - uses: msys2/setup-msys2@v2
+          with:
+            update: true
+            install: >-
+              base-devel
         - uses: haskell/actions/setup@v2
           id: windows-haskell-setup
           with:
@@ -34,7 +38,7 @@ jobs:
               dist-newstyle
             key: ${{ runner.os }}-${{ hashFiles('simpleapp.cabal') }}
         - name: Update and build
-          id: windows-build
+          shell: msys2 {0}
           run: |
             mkdir result
             cabal v2-update
