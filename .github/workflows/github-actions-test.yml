@@ -30,11 +30,11 @@ jobs:
             stack-version: 'latest'
 #        - name: Set dependencies
 #          run: Add-Content $env:GITHUB_PATH $env:PGBIN
-         - name: Set dependencies
-           run: |
-             stack exec -- pacman -Syu --noconfirm
-             stack exec -- pacman -S msys2-keyring --noconfirm
-             stack exec -- pacman -S mingw64/mingw-w64-x86_64-postgresql --noconfirm
+        - name: Set dependencies
+          run: |
+            stack exec -- pacman -Syu --noconfirm
+            stack exec -- pacman -S msys2-keyring --noconfirm
+            stack exec -- pacman -S mingw64/mingw-w64-x86_64-postgresql --noconfirm
 #        - name: Test PSQL in PATH
 #          run: psql --version
 #        - name: Find grep.exe
