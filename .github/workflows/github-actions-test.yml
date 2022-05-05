@@ -16,34 +16,43 @@ jobs:
       runs-on: windows-latest
       steps:
         - uses: actions/checkout@v3
-        - uses: msys2/setup-msys2@v2
-          with:
-            update: true
-            install: >-
-              base-devel
+#        - uses: msys2/setup-msys2@v2
+#          with:
+#            update: true
+#            install: >-
+#              base-devel
         - uses: haskell/actions/setup@v2
           id: windows-haskell-setup
           with:
             ghc-version: '8.10.7'
             cabal-version: '3.6.0.0'
-        - name: Set dependencies
-          run: Add-Content $env:GITHUB_PATH $env:PGBIN
-        - name: Test PSQL in PATH
-          run: psql --version
-        - name: Find grep.exe
-          run: Get-ChildItem grep.exe -Path C:\ -File -Recurse -ErrorAction SilentlyContinue
-        - uses: actions/cache@v3
-          name: Cache cabal files
-          with:
-            path: |
-              ${{ steps.windows-haskell-setup.outputs.cabal-store }}
-              dist-newstyle
-            key: ${{ runner.os }}-${{ hashFiles('simpleapp.cabal') }}
-        - name: Update and build
-          run: |
-            mkdir result
-            cabal v2-update
-            cabal v2-install exe:simpleapp --install-method=copy --installdir=result --extra-prog-path=/c/msys64/usr/bin
+            enable-stack: true
+            stack-version: 'latest'
+#        - name: Set dependencies
+#          run: Add-Content $env:GITHUB_PATH $env:PGBIN
+         - name: Set dependencies
+           run: |
+             stack exec -- pacman -Syu --noconfirm
+             stack exec -- pacman -S msys2-keyring --noconfirm
+             stack exec -- pacman -S mingw64/mingw-w64-x86_64-postgresql --noconfirm
+#        - name: Test PSQL in PATH
+#          run: psql --version
+#        - name: Find grep.exe
+#          run: Get-ChildItem grep.exe -Path C:\ -File -Recurse -ErrorAction SilentlyContinue
+#        - uses: actions/cache@v3
+#          name: Cache cabal files
+#          with:
+#            path: |
+#              ${{ steps.windows-haskell-setup.outputs.cabal-store }}
+#              dist-newstyle
+#            key: ${{ runner.os }}-${{ hashFiles('simpleapp.cabal') }}
+        - name: Stack build
+          run: stack build --local-bin-path result --copy-bins
+#        - name: Update and build
+#          run: |
+#            mkdir result
+#            cabal v2-update
+#            cabal v2-install exe:simpleapp --install-method=copy --installdir=result --extra-prog-path=/c/msys64/usr/bin
         - name: Upload binary
           uses: actions/upload-artifact@v3
           with:
