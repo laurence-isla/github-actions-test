@@ -38,11 +38,10 @@ jobs:
               dist-newstyle
             key: ${{ runner.os }}-${{ hashFiles('simpleapp.cabal') }}
         - name: Update and build
-          shell: msys2 {0}
           run: |
             mkdir result
             cabal v2-update
-            cabal v2-install exe:simpleapp --install-method=copy --installdir=result
+            cabal v2-install exe:simpleapp --install-method=copy --installdir=result --extra-prog-path=/mingw64/usr/bin
         - name: Upload binary
           uses: actions/upload-artifact@v3
           with:
