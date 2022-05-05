@@ -30,6 +30,8 @@ jobs:
           run: Add-Content $env:GITHUB_PATH $env:PGBIN
         - name: Test PSQL in PATH
           run: psql --version
+        - name: Find grep.exe
+          run: Get-ChildItem grep.exe -Path C:\ -File -Recurse -ErrorAction SilentlyContinue
         - uses: actions/cache@v3
           name: Cache cabal files
           with:
@@ -41,7 +43,7 @@ jobs:
           run: |
             mkdir result
             cabal v2-update
-            cabal v2-install exe:simpleapp --install-method=copy --installdir=result --extra-prog-path=/mingw64/usr/bin
+            cabal v2-install exe:simpleapp --install-method=copy --installdir=result --extra-prog-path=/c/msys64/usr/bin
         - name: Upload binary
           uses: actions/upload-artifact@v3
           with:
