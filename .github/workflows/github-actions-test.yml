@@ -18,8 +18,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "A simple test"
-      - name: Test failure
-        run: exit 1
 
   Build-Cabal-Arm:
     name: Build aarch64 (Cabal)
@@ -34,6 +32,8 @@ jobs:
       - id: Remote-Dir
         name: Unique directory name for the remote build
         run: echo "remotepath=postgrest-build-$(uuidgen)" >> "$GITHUB_OUTPUT"
+      - name: Test failure
+        run: exit 1
       - name: Copy script files to the remote server
         uses: appleboy/scp-action@master
         with:
