@@ -28,10 +28,10 @@ jobs:
     env:
       GITHUB_COMMIT: "439a96c578a18776ebde322f7cff487dde377a1b"
     steps:
-      - uses: actions/checkout@v2.4.0
+      - uses: actions/checkout@v3
       - id: Remote-Dir
         name: Unique directory name for the remote build
-        run: echo "::set-output name=remotepath::postgrest-build-$(uuidgen)"
+        run: echo "remotepath=postgrest-build-$(uuidgen)" >> "$GITHUB_OUTPUT"
       - name: Copy script files to the remote server
         uses: appleboy/scp-action@master
         with:
@@ -82,8 +82,8 @@ jobs:
     needs:
       - Build-Cabal-Arm
     outputs:
-      version: "9.0.0.20220516"
-      isprerelease: "1"
+      version: "10.2.0"
+      isprerelease: "0"
     steps:
       - uses: actions/checkout@v3
 
@@ -127,7 +127,7 @@ jobs:
 
           gh release delete "v$VERSION" || true
           gh release create "v$VERSION" \
-            ${isprerelease:+"--prerelease"} \
+            ${isprerelease:+"--prerelease"} \7
             release-bundle/*
 
 
@@ -135,10 +135,18 @@ jobs:
     name: Release on Docker Hub
     runs-on: ubuntu-latest
     needs:
-      - Build-Cabal-Arm
       - Prepare-Release
+    steps:
+      - run: echo "Mock docker upload"
+
+  Release-Docker-Arm:
+    name: Release Arm Builds on Docker Hub
+    runs-on: ubuntu-latest
+    needs:
+      - Build-Cabal-Arm
+      - Release-Docker
     env:
-      GITHUB_COMMIT: "07d619981e3c2725bb5fd2dc9b264240c7d8035d"
+      GITHUB_COMMIT: "e07807deabeaec7790b0f0e34cce8e02087cfa91"
       DOCKER_REPO: laurenceisla
       DOCKER_USER: laurenceisla
       DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
@@ -163,8 +171,12 @@ jobs:
     name: Remove copied files from server
     needs:
       - Build-Cabal-Arm
-      - Release-Docker
-    if: ${{ always() && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v') || startsWith(github.ref, 'refs/heads/rel-')) }}
+      - Prepare-Release
+      - Release-Docker-Arm
+    if: success() ||
+        needs.Build-Cabal-Arm.result == 'failure' ||
+        needs.Build-Cabal-Arm.result == 'cancelled' ||
+        (needs.Build-Cabal-Arm.result == 'success' && needs.Prepare-Release.result == 'skipped')
     runs-on: ubuntu-latest
     env:
       REMOTE_DIR: ${{ needs.Build-Cabal-Arm.outputs.remotepath }}
