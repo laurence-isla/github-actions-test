@@ -18,6 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "A simple test"
+      - name: Test failure
+        run: exit 1
 
   Build-Cabal-Arm:
     name: Build aarch64 (Cabal)
@@ -173,12 +175,11 @@ jobs:
     name: Remove copied files from server
     needs:
       - Build-Cabal-Arm
-      - Prepare-Release
       - Release-Docker-Arm
     if: success() ||
         needs.Build-Cabal-Arm.result == 'failure' ||
         needs.Build-Cabal-Arm.result == 'cancelled' ||
-        (needs.Build-Cabal-Arm.result == 'success' && needs.Prepare-Release.result == 'skipped')
+        (needs.Build-Cabal-Arm.result == 'success' && !startsWith(github.ref, 'refs/tags/v'))
     runs-on: ubuntu-latest
     env:
       REMOTE_DIR: ${{ needs.Build-Cabal-Arm.outputs.remotepath }}
