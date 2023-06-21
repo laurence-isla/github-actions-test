@@ -30,15 +30,13 @@ jobs:
     outputs:
       remotepath: ${{ steps.Remote-Dir.outputs.remotepath }}
     env:
-      GITHUB_COMMIT: "439a96c578a18776ebde322f7cff487dde377a1b"
+      GITHUB_COMMIT: "856d4507753dab1a31acb16752937f4f12cca455"
       GHC_VERSION: ${{ matrix.ghc }}
     steps:
       - uses: actions/checkout@v3
       - id: Remote-Dir
         name: Unique directory name for the remote build
         run: echo "remotepath=postgrest-build-$(uuidgen)" >> "$GITHUB_OUTPUT"
-      - name: Test failure
-        run: exit 1
       - name: Copy script files to the remote server
         uses: appleboy/scp-action@master
         with:
