@@ -18,12 +18,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "A simple test"
-      - run: |
-          if [ $GITHUB_REF == "refs/heads/main" ]; then
-            echo "Shouldn't work since this is a tag"
-          fi
-          echo $GITHUB_REF
-          exit 1
 
 
   Build-Cabal-Arm:
