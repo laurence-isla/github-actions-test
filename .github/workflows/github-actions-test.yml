@@ -82,14 +82,15 @@ jobs:
 
   Prepare-Release:
     name: Prepare release
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: ${{ startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     needs:
       - Simple-Test
       - Build-Cabal-Arm
     outputs:
-      version: "10.2.0"
-      isprerelease: ""
+      version: "nightly-2023-11-13-00-00"
+      isprerelease: "1"
+      isnightly: "1"
     steps:
       - uses: actions/checkout@v3
 
@@ -159,6 +160,7 @@ jobs:
       DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
       VERSION: ${{ needs.Prepare-Release.outputs.version }}
       ISPRERELEASE: ${{ needs.Prepare-Release.outputs.isprerelease }}
+      ISNIGHTLY: ${{ needs.Prepare-Release.outputs.isnightly }}
     steps:
       - uses: actions/checkout@v3
       - name: Publish images for ARM builds on Docker Hub
@@ -171,8 +173,8 @@ jobs:
           key: ${{ secrets.SSH_ARM_PRIVATE_KEY }}
           fingerprint: ${{ secrets.SSH_ARM_FINGERPRINT }}
           script_stop: true
-          envs: GITHUB_COMMIT,DOCKER_REPO,DOCKER_USER,DOCKER_PASS,REMOTE_DIR,VERSION,ISPRERELEASE
-          script: bash ~/$REMOTE_DIR/docker-publish.sh "$GITHUB_COMMIT" "$DOCKER_REPO" "$DOCKER_USER" "$DOCKER_PASS" "$REMOTE_DIR" "$VERSION" "$ISPRERELEASE"
+          envs: GITHUB_COMMIT,DOCKER_REPO,DOCKER_USER,DOCKER_PASS,REMOTE_DIR,VERSION,ISNIGHTLY
+          script: bash ~/$REMOTE_DIR/docker-publish.sh "$GITHUB_COMMIT" "$DOCKER_REPO" "$DOCKER_USER" "$DOCKER_PASS" "$REMOTE_DIR" "$VERSION" "$ISNIGHTLY"
 
   Clean-Arm-Server:
     name: Remove copied files from server
