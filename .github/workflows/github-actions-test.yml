@@ -148,7 +148,7 @@ jobs:
       - Prepare-Release
     env:
       GITHUB_COMMIT: ${{ github.sha }}
-      DOCKER_REPO: postgrest
+      DOCKER_REPO: laurenceisla
       DOCKER_USER: laurenceisla
       DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
       VERSION: ${{ needs.Prepare-Release.outputs.version }}
@@ -169,7 +169,7 @@ jobs:
             ver="$VERSION"
           fi
 
-          docker tag "postgrest:$tag" "$DOCKER_REPO/postgrest:$ver"
+          docker tag postgrest:latest "$DOCKER_REPO/postgrest:$ver"
           docker push "$DOCKER_REPO/postgrest:$ver"
 
           # Only tag 'latest' for full releases
@@ -180,7 +180,7 @@ jobs:
             echo "Pushing to 'nightly' tag for $ver ..."
           fi
 
-          docker tag postgrest:$tag "$DOCKER_REPO"/postgrest:$tag
+          docker tag postgrest:latest "$DOCKER_REPO"/postgrest:$tag
           docker push "$DOCKER_REPO"/postgrest:$tag
 
   Release-Docker-Arm:
