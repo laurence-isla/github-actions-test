@@ -47,6 +47,6 @@ sudo docker buildx build --build-arg PGRST_GITHUB_COMMIT=$PGRST_GITHUB_COMMIT \
 # NOTE: This assumes that there already is a `postgrest:<version>` image
 #       for the amd64 architecture pushed to Docker Hub
 sudo docker buildx imagetools create --append -t $DOCKER_REPO/postgrest:$PGRST_VERSION $DOCKER_REPO/postgrest:$PGRST_VERSION-arm
-[ -z "$IS_NIGHTLY" ] && sudo docker buildx imagetools create --append -t $DOCKER_REPO/postgrest:$DOCKER_TAG $DOCKER_REPO/postgrest:$PGRST_VERSION-arm
+sudo docker buildx imagetools create --append -t $DOCKER_REPO/postgrest:$DOCKER_TAG $DOCKER_REPO/postgrest:$PGRST_VERSION-arm
 
 sudo docker logout
